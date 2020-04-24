@@ -30,6 +30,11 @@ export default function App(props) {
         await Font.loadAsync({
           ...Ionicons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'sf-prod-bold': require('./assets/fonts/SF-Pro-Display-Bold.otf'),
+          'sf-prod-semibold': require('./assets/fonts/SF-Pro-Display-Semibold.otf'),
+          'sf-prod-regular': require('./assets/fonts/SF-Pro-Display-Regular.otf'),
+          'sf-prot-regular': require('./assets/fonts/SF-Pro-Text-Regular.otf'),
+          'sf-prot-semibold': require('./assets/fonts/SF-Pro-Text-Semibold.otf'),
         });
       } catch (e) {
         // We might want to provide this error information to an error reporting service
@@ -50,7 +55,7 @@ export default function App(props) {
       <View style={styles.container}>
         {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
         <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="Root" component={BottomTabNavigator} />
           </Stack.Navigator>
         </NavigationContainer>

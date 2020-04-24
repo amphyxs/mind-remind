@@ -4,6 +4,7 @@ import * as React from 'react';
 import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
+import CalendarScreen from '../screens/CalendarScreen';
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -17,19 +18,27 @@ export default function BottomTabNavigator({ navigation, route }) {
   return (
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
-        name="Home"
+        name="Today"
         component={HomeScreen}
         options={{
-          title: 'Get Started',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+          title: 'Today',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-browsers" />,
         }}
       />
       <BottomTab.Screen
-        name="Links"
+        name="Scheduled"
         component={LinksScreen}
         options={{
-          title: 'Resources',
-          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-book" />,
+          title: 'Scheduled',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-clock" />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Calendar"
+        component={CalendarScreen}
+        options={{
+          title: 'Calendar',
+          tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-calendar" />,
         }}
       />
     </BottomTab.Navigator>

@@ -1,17 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { StatusBar, Image, Platform, StyleSheet, Text, TouchableOpacity, View, ActionSheetIOS, NativeModules, AsyncStorage } from 'react-native';
+import { StatusBar, Image, Platform, StyleSheet, Text, TouchableOpacity, View, ActionSheetIOS, NativeModules, AsyncStorage, FlatList } from 'react-native';
 import { Notifications } from 'expo';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MonoText } from '../components/StyledText';
+import { Ionicons } from '@expo/vector-icons';
+import { SettingsModal } from '../components/SettingsModal';
+import { ReminderCard } from '../components/ReminderCard';
 
 import Colors from '../constants/Colors';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import Layout from '../constants/Layout';
+
 
 export default function HomeScreen() {
 
+  // Platform features
+  var primaryColor;
+  var platformStyles;
+  if(Platform.OS === 'ios') {
+    primaryColor = Colors.iOSBlue;
+    platformStyles = stylesiOS;
+  }
+  else if(Platform.OS === 'android') {
+    primaryColor = 'green'; // TODO
+    platformStyles = stylesAndroid;
+  }
+  else {
+    primaryColor = 'blue'; // TODO
+  }
+  
+
   const [createRemModal, setCreateRemModal] = useState(false); // Modal for creating reminders
-  const [remsList, setRemsList] = useState([{item: 's'}]);
-  const [calendarList, setCalendarList] = useState([{item: 'wz'}, {item: 'cu'}]);
+  const [settingsModal, setSettinsModal] = useState(false); 
+  const [remsList, setRemsList] = useState([]);
+  const [calendarList, setCalendarList] = useState([]);
   const [currId, setCurrId] = useState(0); 
   const appData = [
     {name: 'remsList', func: setRemsList}, 
@@ -50,13 +71,58 @@ export default function HomeScreen() {
       await AsyncStorage.removeItem(appData[item].name);
     }
     NativeModules.DevSettings.reload();
-  }
+  };
+
+  const toggleModal = (modalName, state) => {
+    if(modalName == 'settingsModal') {
+      setSettinsModal(state);
+    }
+  };
+
+  const saveSettings = (settings) => {
+    // TODO
+  };
 
   return (
     <View style={styles.container}>
       {/* TODO : status bar must change it's color within app's color theme */}
-      <StatusBar barStyle='dark-content' /> 
-      <Text>Items</Text>
+      {
+        Platform.OS === 'ios' &&
+        <StatusBar barStyle='dark-content' /> 
+      }
+
+      {
+        settingsModal && 
+        <SettingsModal
+          hide={() => {toggleModal('settingsModal', false)}}
+          saveSettings={(settings) => {saveSettings(settings)}}
+        />
+      }
+
+      <View style={platformStyles.screenHeader}>  
+        <Text style={platformStyles.screenTextHeader}>Today tasks</Text>
+        <TouchableOpacity 
+          style={platformStyles.headerRightButton}
+          onPress={() => {toggleModal('settingsModal', true)}}
+        >
+          <Ionicons name="ios-more" size={Layout.headerIcon} color={primaryColor} />
+        </TouchableOpacity>
+      </View>
+      <FlatList
+        style={styles.remindersList}
+        data={remsList}
+        renderItem={({item}) => 
+          <ReminderCard 
+            title={item.title} 
+            icon={item.icon} 
+            time={item.time}
+            longPressAction={() => {selectReminder(item)}}
+            doneAction={() => {setDone(item)}}
+            failedAction={() => {setFailed(item)}}
+          />
+        }
+        keyExtractor={item => item.id}
+      />
     </View>
   );
 }
@@ -70,86 +136,39 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
   contentContainer: {
     paddingTop: 30,
   },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
+  remindersList: {
+    paddingTop: 5,
   },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
+});
+
+// iOS-only stylesheet
+const stylesiOS = StyleSheet.create({
+  screenHeader: {
+    flex: 0,
+    flexDirection: 'row',
+    textAlign: 'left',
+    paddingTop: 50,
+    paddingBottom: 20,
   },
-  getStartedContainer: {
-    alignItems: 'center',
-    marginHorizontal: 50,
+  screenTextHeader: {
+    marginLeft: 14,
+    color: Colors.textPrimary,
+    fontSize: 34,  
+    fontFamily: 'sf-prod-bold'
   },
-  homeScreenFilename: {
-    marginVertical: 7,
-  },
-  codeHighlightText: {
-    color: 'rgba(96,100,109, 0.8)',
-  },
-  codeHighlightContainer: {
-    backgroundColor: 'rgba(0,0,0,0.05)',
-    borderRadius: 3,
-    paddingHorizontal: 4,
-  },
-  getStartedText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    lineHeight: 24,
-    textAlign: 'center',
-  },
-  tabBarInfoContainer: {
+  headerRightButton: {
     position: 'absolute',
-    bottom: 0,
-    left: 0,
+    top: 50,
     right: 0,
-    ...Platform.select({
-      ios: {
-        shadowColor: 'black',
-        shadowOffset: { width: 0, height: -3 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-      },
-      android: {
-        elevation: 20,
-      },
-    }),
-    alignItems: 'center',
-    backgroundColor: '#fbfbfb',
-    paddingVertical: 20,
+    width: Layout.headerIcon,
+    height: Layout.headerIcon,
   },
-  tabBarInfoText: {
-    fontSize: 17,
-    color: 'rgba(96,100,109, 1)',
-    textAlign: 'center',
-  },
-  navigationFilename: {
-    marginTop: 5,
-  },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
+});
+
+// Android-only stylesheet
+const stylesAndroid = StyleSheet.create({
+  // TODO
 });

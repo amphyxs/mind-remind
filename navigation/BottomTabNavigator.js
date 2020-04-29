@@ -2,8 +2,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import * as React from 'react';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
+import TodayScreen from '../screens/TodayScreen';
+import ScheduledScreen from '../screens/ScheduledScreen';
 import CalendarScreen from '../screens/CalendarScreen';
 
 const BottomTab = createBottomTabNavigator();
@@ -19,7 +19,7 @@ export default function BottomTabNavigator({ navigation, route }) {
     <BottomTab.Navigator initialRouteName={INITIAL_ROUTE_NAME}>
       <BottomTab.Screen
         name="Today"
-        component={HomeScreen}
+        component={TodayScreen}
         options={{
           title: 'Today',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-browsers" />,
@@ -27,7 +27,7 @@ export default function BottomTabNavigator({ navigation, route }) {
       />
       <BottomTab.Screen
         name="Scheduled"
-        component={LinksScreen}
+        component={ScheduledScreen}
         options={{
           title: 'Scheduled',
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="ios-clock" />,

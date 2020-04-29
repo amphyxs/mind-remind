@@ -3,6 +3,14 @@ import Svg, { Path } from "react-native-svg"
 
 // Default SVG Icons
 
+export function getIconsList() {
+  return [
+    {label: 'Bell', value: 'bell'},
+    {label: 'Dumbell', value: 'dumbell'},
+    {label: 'Computer', value: 'computer'},
+  ];
+}
+
 export function SVGIcon(props) {
   if(props.icon == "dumbbell") {
     return (

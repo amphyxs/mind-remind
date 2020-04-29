@@ -49,7 +49,7 @@ export function ReminderCard(props) {
           />
           <View style={styles.data}>
             <Text style={styles.header}>{props.title}</Text>
-            <Text style={styles.time}>{props.time}</Text>
+            <Text style={styles.time}>{props.timeUntill}</Text>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -101,9 +101,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   leftAction: {
-    height: 70,
-    width: 70,
-    paddingTop: 5,
+    position: 'relative',
+    top: 5,
+    height: 60,
+    width: 60,
     paddingLeft: 25,
     marginLeft: 15,
     justifyContent: 'center',
@@ -111,13 +112,19 @@ const styles = StyleSheet.create({
     borderRadius: 100
   },
   rightAction: {
-    height: 70,
-    width: 70,
-    paddingTop: 5,
+    position: 'relative',
+    top: 5,
+    height: 60,
+    width: 60,
     paddingLeft: 25,
     marginRight: 15,
     justifyContent: 'center',
     backgroundColor: Colors.iOSRed,
-    borderRadius: 100
+    borderRadius: 100,
   },
+  actionIcon: {
+    position: 'relative',
+    right: 5,
+    top: 3,
+  }
 });

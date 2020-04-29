@@ -9,5 +9,5 @@ export default {
     height,
   },
   isSmallDevice: width < 375,
-  headerIcon: 48, // Width & Height
+  headerIcon: 40, // Width & Height
 };

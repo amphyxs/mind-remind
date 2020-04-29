@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, Switch } from 'react-native';
+import { Image, Platform, StyleSheet, Text, TouchableOpacity, View, Modal, TextInput, Switch, Button,  NativeModules, AsyncStorage } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { MonoText } from '../components/StyledText';
 import { Ionicons } from '@expo/vector-icons';
+import { FormPicker, FormSwitch, FormTextInput, FormButton, SingleField, GroupedFields, Separator } from '../components/Forms';
+import { Notifications } from 'expo';
 import RNPickerSelect from 'react-native-picker-select';
 
 import Colors from '../constants/Colors';
@@ -17,12 +18,21 @@ export function SettingsModal(props) {
     {label: 'Light', value: 'light'},
     {label: 'Dark', value: 'dark'},
   ]
+  const appData = ['remsList', 'currId', 'calendarList', 'todayRemsList'];
 
   const updateSetting = (property, value) => {
     settings.property = value;
     setSettings(setting);
   }
   
+  const clearStorage = async () => {
+    for(let item in appData) {
+      await AsyncStorage.removeItem(appData[item]);
+    }
+    Notifications.cancelAllScheduledNotificationsAsync();
+    NativeModules.DevSettings.reload();
+  };
+
   return (
     <Modal
       animationType='slide'
@@ -50,85 +60,50 @@ export function SettingsModal(props) {
             </TouchableOpacity>
           </View>
           <ScrollView>
-            <View style={styles.singleField}>
+            <SingleField>
               <FormPicker
                 title='Color theme'
+                icon='ios-color-palette'
                 items={themes}
                 value={themeForm}
                 updater={(value) => {setThemeForm(value)}}
-                icon='ios-arrow-down'
               />
-            </View>
-            <View style={styles.groupedFields}>
+            </SingleField>
+            <GroupedFields>
               <FormSwitch
-                title='Sound'
+                title='Notifications'
+                icon='ios-notifications'
                 toggle={() => {setSoundForm(!soundForm)}}
                 value={soundForm}
               />
-              <View style={styles.separator}></View>
+              <Separator/>
               <FormSwitch
                 title='Sound'
+                icon='ios-volume-high'
                 toggle={() => {setSoundForm(!soundForm)}}
                 value={soundForm}
               />
-              <View style={styles.separator}></View>
+              <Separator/>
               <FormSwitch
-                title='Sound'
+                title='Vibration'
+                icon='ios-flash'
                 toggle={() => {setSoundForm(!soundForm)}}
                 value={soundForm}
               />
-            </View>
+            </GroupedFields>
+            <SingleField>
+              <FormButton
+                title='Clear data'
+                icon='ios-trash'
+                handler={clearStorage}
+              />
+            </SingleField>
           </ScrollView>
         </View>
       </View>
     </Modal>
   );
 }
-
-function FormPicker(props) {
-  return (
-    <View style={styles.formView}>
-      <Text style={styles.inputLabel}>{props.title}</Text>
-      <View style={{...styles.formInput, paddingTop: 10}}>
-        <RNPickerSelect
-          style={{
-            iconContainer: {
-              top: -2,
-              right: -10,
-            },
-            alignSelf: 'flex-end'
-          }}
-          placeholder={{}}
-          items={props.items}
-          onValueChange={value => {props.updater(value)}}
-          value={props.value}
-          useNativeAndroidPickerStyle={true}
-          Icon={() => {
-            return <Ionicons name={props.icon} size={21} color="gray" />;
-          }}
-        />
-      </View> 
-    </View>
-  );
-};
-
-function FormSwitch(props) {
-  return (
-    <View style={styles.formView}>
-      <Text style={styles.inputLabel}>{props.title}</Text>
-      <View style={styles.formInput}>
-        <Switch 
-          style={{alignSelf: 'flex-end'}}
-          trackColor={{false: '#acacac', true: Colors.iOSGreen }}
-          thumbColor='#fafafa'
-          ios_backgroundColor='#fafafa'
-          onValueChange={props.toggle}
-          value={props.value}
-        />
-      </View> 
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -144,7 +119,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 20,
     paddingBottom: 35,
-    backgroundColor: Colors.themeBackground,
+    backgroundColor: Colors.modalHeaderBackground,
     borderBottomColor: Colors.iOSBorder,
     borderBottomWidth: 1,
     textAlign: 'center',
@@ -205,7 +180,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 15,
   },
+  formIcon: {
+    position: 'absolute',
+    bottom: 8,
+    left: 20,
+  },
   inputLabel: {
+    position: 'relative',
+    left: 45,
     fontSize: 18,
     fontFamily: "sf-prot-regular",
     color: Colors.textPrimary,

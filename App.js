@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 import { SplashScreen } from 'expo';
 import * as Font from 'expo-font';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -29,6 +29,7 @@ export default function App(props) {
         // Load fonts
         await Font.loadAsync({
           ...Ionicons.font,
+          ...MaterialCommunityIcons.font,
           'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
           'sf-prod-bold': require('./assets/fonts/SF-Pro-Display-Bold.otf'),
           'sf-prod-semibold': require('./assets/fonts/SF-Pro-Display-Semibold.otf'),
@@ -53,7 +54,7 @@ export default function App(props) {
   } else {
     return (
       <View style={styles.container}>
-        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}
+        {Platform.OS === 'ios' && <StatusBar barStyle="dark-content" />}
         <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
           <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="Root" component={BottomTabNavigator} />

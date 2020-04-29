@@ -1,4 +1,4 @@
-const tintColor = '#2f95dc';
+const tintColor = '#007AFF';
 
 export default {
   tintColor,
@@ -14,10 +14,13 @@ export default {
   iOSBlue: tintColor,
   iOSGreen: '#49d662',
   iOSRed: '#ff453a',
-  themeBackground: '#fff',
+  iOSBorder: '#DBDBDB',
+  themeBackground: '#fafafa',
+  screenHeaderBackground: '#fff',
+  modalHeaderBackground: '#fff',
   textPrimary: '#000',
-  iOSBorder: '#cfcfcf',
-  iOSLightBackground: '#f2f2f2',
-  reminderCardBorder: '#a8a8a8',
+  iOSLightBackground: '#F7F7F7',
+  iconLight: 'rgba(0,0,0,0.35)',
+  reminderCardBorder: '#DBDBDB',
   reminderCardBackground: '#fff',
 };
